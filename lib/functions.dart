@@ -13,12 +13,26 @@
 // limitations under the License.
 
 import 'package:functions_framework/functions_framework.dart';
+import 'package:hello_world_function/service/SumgoCrawllerService.dart';
 import 'package:shelf/shelf.dart';
+import 'package:shelf_router/shelf_router.dart';
+
+Router app = Router()
+      ..get('/sumgoApi/<apiPath>', (Request request, String endPoint) {
+        return SumgoCrawllerService.me.route(endPoint);
+      })
+// ..get('/user/<user>', (Request request, String user) {
+//   // fetch the user... (probably return as json)
+//   return Response.ok('hello $user');
+// })
+// ..post('/user', (Request request) {
+//   // convert request body to json and persist... (probably return as json)
+//   return Response.ok('saved the user');
+// })
+    ;
 
 @CloudFunction()
-Response function(Request request) {
-  return Response.ok('request.handlerPath : ${request.handlerPath}, request.url : ${request.url}, request.requestedUri : ${request.requestedUri}');
-}
+Future<Response> function(Request request) async =>  await app.call(request);
 
 // Overriding the default 'function' also works, but you will need
 // to ensure to set the FUNCTION_TARGET environment variable for the
