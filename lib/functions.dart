@@ -17,7 +17,7 @@ import 'package:shelf/shelf.dart';
 
 @CloudFunction()
 Response function(Request request) {
-  return Response.ok('request.handlerPath : ${request.handlerPath}');
+  return Response.ok('request.handlerPath : ${request.handlerPath}, request.url : ${request.url}, request.requestedUri : ${request.requestedUri}');
 }
 
 // Overriding the default 'function' also works, but you will need
