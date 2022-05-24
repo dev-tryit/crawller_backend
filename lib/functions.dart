@@ -16,7 +16,12 @@ import 'package:functions_framework/functions_framework.dart';
 import 'package:shelf/shelf.dart';
 
 @CloudFunction()
-Response function(Request request) => Response.ok('Hello, World2!');
+Response function(Request request) => Response.ok('Hello, World!');
+
+@CloudFunction(target: "/test")
+Response test(Request request) {
+  return Response.ok('테스트');
+}
 
 // Overriding the default 'function' also works, but you will need
 // to ensure to set the FUNCTION_TARGET environment variable for the
