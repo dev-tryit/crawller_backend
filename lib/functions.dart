@@ -23,6 +23,16 @@ Response test(Request request) {
   return Response.ok('테스트');
 }
 
+@CloudFunction(target: "/test/a")
+Response testA(Request request) {
+  return Response.ok('테스트1');
+}
+
+@CloudFunction(target: "test")
+Response testB(Request request) {
+  return Response.ok('테스트2');
+}
+
 // Overriding the default 'function' also works, but you will need
 // to ensure to set the FUNCTION_TARGET environment variable for the
 // process to 'handleGet' as well.
