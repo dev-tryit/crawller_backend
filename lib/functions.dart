@@ -16,21 +16,8 @@ import 'package:functions_framework/functions_framework.dart';
 import 'package:shelf/shelf.dart';
 
 @CloudFunction()
-Response function(Request request) => Response.ok('Hello, World!');
-
-@CloudFunction(target: "/test")
-Response test(Request request) {
-  return Response.ok('테스트');
-}
-
-@CloudFunction(target: "/test/a")
-Response testA(Request request) {
-  return Response.ok('테스트1');
-}
-
-@CloudFunction(target: "test")
-Response testB(Request request) {
-  return Response.ok('테스트2');
+Response function(Request request) {
+  return Response.ok('request.handlerPath : ${request.handlerPath}');
 }
 
 // Overriding the default 'function' also works, but you will need
