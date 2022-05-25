@@ -1,7 +1,9 @@
+import 'dart:io';
+
 import 'package:crawller_backend/_common/util/AuthUtil.dart';
 import 'package:crawller_backend/_common/util/LogUtil.dart';
 import 'package:crawller_backend/_common/util/PuppeteerUtil.dart';
-import 'package:crawller_backend/_local/local.dart';
+import 'package:crawller_backend/_local/setLocalData.sh';
 import 'package:crawller_backend/repository/KeywordItemRepository.dart';
 import 'package:crawller_backend/repository/RemovalConditionRepository.dart';
 import 'package:crawller_backend/repository/SettingRepository.dart';
@@ -42,7 +44,8 @@ class SumgoCrawllerService {
       return shelf.Response.forbidden('settingDocumentId is null');
     }
 
-    AuthUtil().loginWithEmail(localData["email"]!, localData["password"]!);
+    Map<String, String> evnVars = Platform.environment;
+    AuthUtil().loginWithEmail(evnVars["firebaseEmail"]!, evnVars["firebasePassword"]!);
 
     Setting? setting =
         await SettingRepository().getOne(documentId: settingDocumentId);
