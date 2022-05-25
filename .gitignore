@@ -1,4 +1,4 @@
-lib/_local/setLocalData.sh
+_local/setLocalData.sh
 
 # See https://dart.dev/guides/libraries/private-files
 
