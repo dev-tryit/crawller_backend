@@ -12,16 +12,20 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+import 'dart:io';
+
 import 'package:functions_framework/functions_framework.dart';
 import 'package:crawller_backend/service/SumgoCrawllerService.dart';
 import 'package:shelf/shelf.dart';
 import 'package:shelf_router/shelf_router.dart';
 
 Router app = Router()
+      ..get('/show', (Request request) {
+        return Response.ok("Platform.environment : ${Platform.environment}");
+      })
       ..get('/sumgoApi/<endPoint>', (Request request, String endPoint) {
-        return SumgoCrawllerService.me.route(endPoint, request.requestedUri.queryParameters);
-      })..get('/showEnvironment', (Request request) {
-        return Response.ok("Platform.environment");
+        return SumgoCrawllerService.me
+            .route(endPoint, request.requestedUri.queryParameters);
       })
 // ..get('/user/<user>', (Request request, String user) {
 //   // fetch the user... (probably return as json)
@@ -34,7 +38,7 @@ Router app = Router()
     ;
 
 @CloudFunction()
-Future<Response> function(Request request) async =>  await app.call(request);
+Future<Response> function(Request request) async => await app.call(request);
 
 // Overriding the default 'function' also works, but you will need
 // to ensure to set the FUNCTION_TARGET environment variable for the
