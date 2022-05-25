@@ -8,10 +8,9 @@ RUN dart pub get
 # Copy app source code and AOT compile it.
 COPY . .
 
-RUN apt-get update -y && apt-get install -y unzip
-
 # Ensure packages are still up-to-date if anything has changed
 RUN dart pub get --offline
+RUN dart bin/download_chromium.dart
 RUN dart pub run build_runner build --delete-conflicting-outputs
 RUN dart compile exe bin/server.dart -o bin/server
 
