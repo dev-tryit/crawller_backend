@@ -20,6 +20,8 @@ COPY . .
 RUN dart bin/download_chromium.dart
 RUN ls -al /app
 RUN ls -al /app/.local-chromium
+RUN ls -al /app/.local-chromium/970485
+RUN ls -al /app/.local-chromium/970485/chrome-linux
 
 # Ensure packages are still up-to-date if anything has changed
 RUN dart pub get --offline
