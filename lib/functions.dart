@@ -14,6 +14,7 @@
 
 import 'dart:io';
 
+import 'package:crawller_backend/_common/util/AuthUtil.dart';
 import 'package:functions_framework/functions_framework.dart';
 import 'package:crawller_backend/service/SumgoCrawllerService.dart';
 import 'package:shelf/shelf.dart';
@@ -38,7 +39,11 @@ Router app = Router()
     ;
 
 @CloudFunction()
-Future<Response> function(Request request) async => await app.call(request);
+Future<Response> function(Request request) async {
+  await AuthUtil().init();
+
+  return await app.call(request);
+}
 
 // Overriding the default 'function' also works, but you will need
 // to ensure to set the FUNCTION_TARGET environment variable for the
