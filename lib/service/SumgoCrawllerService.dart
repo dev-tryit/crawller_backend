@@ -1,7 +1,7 @@
 import 'package:crawller_backend/_common/util/LogUtil.dart';
 import 'package:crawller_backend/_common/util/PuppeteerUtil.dart';
-import 'package:crawller_backend/model/KeywordItem.dart';
-import 'package:crawller_backend/model/Setting.dart';
+import 'package:crawller_backend/repository/KeywordItemRepository.dart';
+import 'package:crawller_backend/repository/SettingRepository.dart';
 import 'package:puppeteer/puppeteer.dart';
 import 'package:shelf/shelf.dart' as shelf;
 
