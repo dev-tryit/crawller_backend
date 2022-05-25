@@ -23,8 +23,6 @@ import 'package:crawller_backend/functions.dart' as function_library;
 
 Future<void> main(List<String> args) async {
   ErrorUtil.catchError(() async {
-    await HiveUtil.init();
-    await AuthUtil().init();
     await serve(args, _nameToFunctionTarget);
   });
 }

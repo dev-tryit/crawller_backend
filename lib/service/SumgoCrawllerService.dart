@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:crawller_backend/_common/util/AuthUtil.dart';
 import 'package:crawller_backend/_common/util/LogUtil.dart';
 import 'package:crawller_backend/_common/util/PuppeteerUtil.dart';
+import 'package:crawller_backend/_common/util/hive/HiveUtil.dart';
 import 'package:crawller_backend/repository/KeywordItemRepository.dart';
 import 'package:crawller_backend/repository/RemovalConditionRepository.dart';
 import 'package:crawller_backend/repository/SettingRepository.dart';
@@ -36,6 +37,9 @@ class SumgoCrawllerService {
 
   Future<shelf.Response> crawll(
       String? settingDocumentIdStr, String? firebaseAuthEmail) async {
+    await HiveUtil.init();
+    await AuthUtil().init();
+    
     if (settingDocumentIdStr == null) {
       return shelf.Response.forbidden('settingDocumentIdStr is null');
     }
