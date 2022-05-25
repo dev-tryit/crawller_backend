@@ -17,11 +17,14 @@ import 'dart:io';
 
 import 'package:crawller_backend/_common/util/AuthUtil.dart';
 import 'package:crawller_backend/_common/util/ErrorUtil.dart';
+import 'package:crawller_backend/_common/util/hive/HiveUtil.dart';
 import 'package:functions_framework/serve.dart';
 import 'package:crawller_backend/functions.dart' as function_library;
 
 Future<void> main(List<String> args) async {
   ErrorUtil.catchError(() async {
+    await HiveUtil.init();
+    await AuthUtil().init();
     await serve(args, _nameToFunctionTarget);
   });
 }
