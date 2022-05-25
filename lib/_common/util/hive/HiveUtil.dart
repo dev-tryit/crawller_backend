@@ -6,7 +6,8 @@ import 'package:path/path.dart';
 
 class HiveUtil {
   static Future<void> init() async {
-    Hive.init(join(Platform.script.toFilePath(), null));
+    String dirPath = dirname(Platform.script.toFilePath());
+    Hive.init(dirPath);
     Hive.registerAdapter(TokenAdapter());
   }
 }
