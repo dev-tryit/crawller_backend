@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import 'package:functions_framework/functions_framework.dart';
-import 'package:hello_world_function/service/SumgoCrawllerService.dart';
+import 'package:crawller_backend/service/SumgoCrawllerService.dart';
 import 'package:shelf/shelf.dart';
 import 'package:shelf_router/shelf_router.dart';
 

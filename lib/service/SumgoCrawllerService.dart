@@ -1,7 +1,7 @@
-import 'package:hello_world_function/_common/util/LogUtil.dart';
-import 'package:hello_world_function/_common/util/PuppeteerUtil.dart';
-import 'package:hello_world_function/model/KeywordItem.dart';
-import 'package:hello_world_function/model/Setting.dart';
+import 'package:crawller_backend/_common/util/LogUtil.dart';
+import 'package:crawller_backend/_common/util/PuppeteerUtil.dart';
+import 'package:crawller_backend/model/KeywordItem.dart';
+import 'package:crawller_backend/model/Setting.dart';
 import 'package:puppeteer/puppeteer.dart';
 import 'package:shelf/shelf.dart' as shelf;
 

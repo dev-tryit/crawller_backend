@@ -1,4 +1,4 @@
-name: hello_world_function
+name: crawller_backend
 version: 0.4.0
 description: Dart Functions Framework simple function example.
 repository: https://github.com/GoogleCloudPlatform/functions-framework-dart
@@ -13,6 +13,13 @@ dependencies:
   shelf_router: ^1.1.2
   puppeteer: ^2.9.0
   logger: ^1.1.0
+  uuid: ^3.0.6
+  hive: ^2.2.1
+  firedart:
+    git:
+      url: https://github.com/dev-tryit/firedart.git
+      ref: addXFirebaseLocaleHeader # branch name
+
 
 dev_dependencies:
   build_runner: ^2.1.11

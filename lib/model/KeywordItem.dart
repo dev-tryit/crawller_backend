@@ -1,5 +1,5 @@
 
-import 'package:hello_world_function/_common/abstract/WithDocId.dart';
+import 'package:crawller_backend/_common/abstract/WithDocId.dart';
 
 class KeywordItem extends WithDocId {
   static const String className = "KeywordItem";
