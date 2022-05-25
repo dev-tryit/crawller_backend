@@ -6,6 +6,9 @@ import 'package:crawller_backend/_common/util/firebase/firedart/FiredartAuthSing
 enum NeededAuthBehavior { NEED_LOGIN, NEED_VERIFICATION, NEED_REGISTRATION }
 
 class AuthUtil {
+  late final FirebaseAuthUtilInterface _firebaseAuthUtilInterface;
+  static const _password = "tempNewPassword";
+  static const _nameRegistered = "nameRegistered";
   String? email;
 
   static final AuthUtil _singleton = AuthUtil._internal();
@@ -25,10 +28,6 @@ class AuthUtil {
       회원가입이 완료되면, user.displayName을 ""로 변경할 것임 (기본값 null)
   5. 따라서, isLogin에서 displayName이 null이라면, 로그아웃시키고, 로그인안된것으로 처리해야한다.
    */
-
-  late final FirebaseAuthUtilInterface _firebaseAuthUtilInterface;
-  static const _password = "tempNewPassword";
-  static const _nameRegistered = "nameRegistered";
 
   Future<void> init() async {
     _firebaseAuthUtilInterface = FiredartAuthSingleton();
