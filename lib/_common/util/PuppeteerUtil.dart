@@ -5,6 +5,22 @@ import 'package:puppeteer/puppeteer.dart';
 
 import 'LogUtil.dart';
 
+import 'package:path/path.dart' as p;
+
+String getExecutablePath(String revisionPath) {
+  if (Platform.isWindows) {
+    return p.join(revisionPath, 'chrome-win', 'chrome.exe');
+  } else if (Platform.isLinux) {
+    return p.join(revisionPath, 'chrome-linux', 'chrome');
+  } else if (Platform.isMacOS) {
+    return p.join(revisionPath, 'chrome-mac', 'Chromium.app', 'Contents',
+        'MacOS', 'Chromium');
+  } else {
+    throw UnsupportedError('Unknown platform ${Platform.operatingSystem}');
+  }
+}
+
+
 class PuppeteerUtil {
   late Browser browser;
   late Page tab;
@@ -25,6 +41,7 @@ class PuppeteerUtil {
       browser = await puppeteer.connect(browserUrl: browserUrl!);
     } else {
       browser = await puppeteer.launch(
+        executablePath: getExecutablePath("/app/.local-chromium/970485"),
         headless: headless,
         args: [
           '--no-sandbox',
