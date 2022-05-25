@@ -7,6 +7,9 @@ RUN dart pub get
 
 # Copy app source code and AOT compile it.
 COPY . .
+
+RUN apt-get update -y && apt-get install -y unzip
+
 # Ensure packages are still up-to-date if anything has changed
 RUN dart pub get --offline
 RUN dart pub run build_runner build --delete-conflicting-outputs
