@@ -55,8 +55,7 @@ abstract class FirebaseStoreUtilInterface<Type extends WithDocId> {
   }
 
   Future<Type?> getOne(
-      {required int documentId,
-      required Type Function() onMakeInstance}) async {
+      {required int documentId}) async {
     return applyInstance(await dRefToMap(dRef(documentId: documentId)));
   }
 

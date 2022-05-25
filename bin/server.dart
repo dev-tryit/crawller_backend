@@ -13,11 +13,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+import 'package:crawller_backend/_common/util/ErrorUtil.dart';
 import 'package:functions_framework/serve.dart';
 import 'package:crawller_backend/functions.dart' as function_library;
 
 Future<void> main(List<String> args) async {
-  await serve(args, _nameToFunctionTarget);
+  ErrorUtil.catchError(() async {
+    await serve(args, _nameToFunctionTarget);
+  });
 }
 
 FunctionTarget? _nameToFunctionTarget(String name) {

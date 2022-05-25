@@ -67,8 +67,8 @@ class SettingRepository {
     await _.deleteOne(documentId: documentId);
   }
 
-  Future<Setting?> getOne() async {
-    return await _.getOneByField(onlyMyData: true,);
+  Future<Setting?> getOne({required int documentId}) async {
+    return await _.getOne(documentId: documentId);
   }
 
   Future<List<Setting>> getList() async {

@@ -18,8 +18,8 @@ import 'package:shelf/shelf.dart';
 import 'package:shelf_router/shelf_router.dart';
 
 Router app = Router()
-      ..get('/sumgoApi/<apiPath>', (Request request, String endPoint) {
-        return SumgoCrawllerService.me.route(endPoint);
+      ..get('/sumgoApi/<endPoint>', (Request request, String endPoint) {
+        return SumgoCrawllerService.me.route(endPoint, request.requestedUri.queryParameters);
       })
 // ..get('/user/<user>', (Request request, String user) {
 //   // fetch the user... (probably return as json)

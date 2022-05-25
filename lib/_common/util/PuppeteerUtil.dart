@@ -11,19 +11,6 @@ class PuppeteerUtil {
 
   final defaultTimeout = Duration(seconds: 10);
 
-  Future<void> openBrowser(Future<void> Function() function,
-      {int width = 1920,
-      int height = 1600,
-      bool headless = true,
-      String? browserUrl}) async {
-    await startBrowser(
-        width: width,
-        height: height,
-        headless: headless,
-        browserUrl: browserUrl);
-    await function();
-    await stopBrowser();
-  }
 
   Future<void> startBrowser(
       {int width = 1920,

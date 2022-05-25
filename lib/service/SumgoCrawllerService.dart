@@ -1,6 +1,10 @@
+import 'package:crawller_backend/_common/util/AuthUtil.dart';
 import 'package:crawller_backend/_common/util/LogUtil.dart';
 import 'package:crawller_backend/_common/util/PuppeteerUtil.dart';
+import 'package:crawller_backend/_local/local.dart';
 import 'package:crawller_backend/repository/KeywordItemRepository.dart';
+import 'package:crawller_backend/repository/RemovalConditionRepository.dart';
+import 'package:crawller_backend/repository/SettingRepository.dart';
 import 'package:crawller_backend/repository/SettingRepository.dart';
 import 'package:puppeteer/puppeteer.dart';
 import 'package:shelf/shelf.dart' as shelf;
@@ -20,25 +24,46 @@ class SumgoCrawllerService {
         this.delay = const Duration(milliseconds: 100),
         this.timeout = Duration(seconds: 20);
 
-  Future<shelf.Response> route(String endPoint) async {
-    if (endPoint == "test") {
-      return shelf.Response.ok('sumgo success');
+  Future<shelf.Response> route(String endPoint, Map<String, String> queryParameters) async {
+    if (endPoint == "crawll") {
+      await start(queryParameters["settingDocumentId"]);
+      return shelf.Response.ok('crawll success');
     } else {
-      return shelf.Response.forbidden('sumgo error');
+      return shelf.Response.forbidden('crawll fail');
     }
   }
 
-  Future<void> start(Setting setting, List<String> listToIncludeAlways,
-      List<String> listToInclude, List<String> listToExclude) async {
-    await p.openBrowser(
-      () async {
-        await _login(setting.sumgoId ?? "", setting.sumgoPw ?? "");
-        await _deleteAndSendRequests(
-            listToIncludeAlways, listToInclude, listToExclude);
-      },
+  Future<void> start(String? settingDocumentIdStr) async {
+    if(settingDocumentIdStr == null) {
+      LogUtil.warn("settingDocumentIdStr is null");
+      return;
+    }
+
+    int? settingDocumentId = int.tryParse(settingDocumentIdStr);
+    if(settingDocumentId == null) {
+      LogUtil.warn("settingDocumentId is null");
+      return;
+    }
+
+    AuthUtil().loginWithEmail(localData["email"], localData["password"]);
+
+    Setting? setting =
+        await SettingRepository().getOne(documentId: settingDocumentId);
+    if (setting == null) {
+      LogUtil.warn("setting이 없습니다.");
+      return;
+    }
+
+    await p.startBrowser(
       headless: true,
       browserUrl: setting.crallwerUrl,
     );
+
+    await _login(setting.sumgoId ?? "", setting.sumgoPw ?? "");
+
+    await _deleteAndSendRequests();
+
+    await p.stopBrowser();
   }
 
   Future<void> _login(String? id, String? pw) async {
@@ -62,12 +87,15 @@ class SumgoCrawllerService {
     return !isLoginPage;
   }
 
-  Future<void> _deleteRequest(ElementHandle tag) async {
+  Future<void> _deleteRequest(ElementHandle tag, String requestContent) async {
+    LogUtil.info("_deleteRequest requestContent:${requestContent}");
+
     await p.click('.quote-btn.del', tag: tag);
     await p.click('.swal2-confirm.btn');
   }
 
-  Future<void> _sendRequests(ElementHandle tag) async {
+  Future<void> _sendRequests(ElementHandle tag, String requestContent) async {
+    LogUtil.info("_sendRequests requestContent:${requestContent}");
     //요청보러들어가기
     await tag.click();
     await p.waitForNavigation();
@@ -84,14 +112,11 @@ class SumgoCrawllerService {
         "document.querySelector('.btn.btn-primary.btn-block').click();");
   }
 
-  Future<void> _deleteAndSendRequests(List<String> listToIncludeAlways,
-      List<String> listToInclude, List<String> listToExclude) async {
+  Future<void> _deleteAndSendRequests() async {
     LogUtil.info("_deleteAndSendRequests 시작");
 
     Future<bool> refreshAndExitIfShould() async {
       await p.goto('https://soomgo.com/requests/received');
-      // await p.reload();
-      // await p.autoScroll();
       bool existSelector =
           await p.waitForSelector('.request-list > li > .request-item');
       if (!existSelector) {
@@ -129,12 +154,10 @@ class SumgoCrawllerService {
       keywordMap.addAll(await countKeyword(message));
 
       await decideMethod(
-          message,
-          () async => await _sendRequests(tag),
-          () async => await _deleteRequest(tag),
-          listToIncludeAlways,
-          listToInclude,
-          listToExclude);
+        message,
+        () async => await _sendRequests(tag, message),
+        () async => await _deleteRequest(tag, message),
+      );
     }
 
     Future<void> saveFirestore(Map<String, int> keywordMap) async {
@@ -165,13 +188,21 @@ class SumgoCrawllerService {
     await saveFirestore(keywordMap);
   }
 
-  Future<void> decideMethod(
-      String message,
-      Future<void> Function() send,
-      Future<void> Function() delete,
-      List<String> listToIncludeAlways,
-      List<String> listToInclude,
-      List<String> listToExclude) async {
+  Future<void> decideMethod(String message, Future<void> Function() send,
+      Future<void> Function() delete) async {
+    final List<String> listToIncludeAlways = (await RemovalConditionRepository()
+            .getListByType(type: RemovalType.best.value))
+        .map((e) => e.content ?? "")
+        .toList();
+    final List<String> listToInclude = (await RemovalConditionRepository()
+            .getListByType(type: RemovalType.include.value))
+        .map((e) => e.content ?? "")
+        .toList();
+    final List<String> listToExclude = (await RemovalConditionRepository()
+            .getListByType(type: RemovalType.exclude.value))
+        .map((e) => e.content ?? "")
+        .toList();
+
     //아래 키워드가 있으면 바로 메시지 보낸다.
     for (String toIncludeAlways in listToIncludeAlways) {
       if (message.toLowerCase().contains(toIncludeAlways.toLowerCase())) {
