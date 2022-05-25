@@ -34,9 +34,11 @@ class KeywordItem extends WithDocId {
 class KeywordItemRepository {
   static final KeywordItemRepository _singleton =
       KeywordItemRepository._internal();
+
   factory KeywordItemRepository() {
     return _singleton;
   }
+
   KeywordItemRepository._internal();
 
   final _ = FirebaseStoreUtilInterface.init<KeywordItem>(
@@ -57,20 +59,19 @@ class KeywordItemRepository {
 
   Future<bool> existDocumentId({required int documentId}) async {
     return await _.exist(
-      key: "documentId",
-      value: documentId.toString(),
-    );
+        query: _.cRef().where("documentId", isEqualTo: documentId));
   }
 
   Future<void> delete({required int documentId}) async {
     await _.deleteOne(documentId: documentId);
   }
 
-  Future<KeywordItem?> getKeywordItem({required String keyword}) async {
+  Future<KeywordItem?> getKeywordItem(
+      {required String email, required String keyword}) async {
     return await _.getOneByField(
-      key: "keyword",
-      value: keyword,
-      onlyMyData:true,
-    );
+        query: _
+            .cRef()
+            .where("email", isEqualTo: email)
+            .where("keyword", isEqualTo: keyword));
   }
 }

@@ -2,6 +2,7 @@ import 'package:crawller_backend/_common/abstract/WithDocId.dart';
 import 'package:crawller_backend/_common/util/AuthUtil.dart';
 import 'package:crawller_backend/_common/util/LogUtil.dart';
 import 'package:crawller_backend/_common/util/firebase/firedart/FiredartStoreUtil.dart';
+import 'package:firedart/firedart.dart';
 
 abstract class FirebaseStoreUtilInterface<Type extends WithDocId> {
   String collectionName;
@@ -21,9 +22,9 @@ abstract class FirebaseStoreUtilInterface<Type extends WithDocId> {
         collectionName: collectionName, fromMap: fromMap, toMap: toMap);
   }
 
-  cRef();
+  CollectionReference cRef();
 
-  dRef({int? documentId});
+  DocumentReference dRef({int? documentId});
 
   Future<Map<String, dynamic>> dRefToMap(dRef);
 
@@ -31,17 +32,11 @@ abstract class FirebaseStoreUtilInterface<Type extends WithDocId> {
       (map == null || map.isEmpty) ? null : fromMap(map);
 
   Future<Type?> getOneByField(
-      {String? key,
-      String? value,
-      bool onlyMyData = false,
+      {required QueryReference query,
       bool useSort = true,
       bool descending = false}) async {
-    List<Type?> list = await getList(
-        key: key,
-        value: value,
-        onlyMyData: onlyMyData,
-        useSort: useSort,
-        descending: descending);
+    List<Type?> list =
+        await getList(query: query, useSort: useSort, descending: descending);
     return list.isNotEmpty ? list.first : null;
   }
 
@@ -49,13 +44,12 @@ abstract class FirebaseStoreUtilInterface<Type extends WithDocId> {
     return await dRef(documentId: documentId).delete();
   }
 
-  Future<bool> exist({required String key, required String value}) async {
-    var data = await getOneByField(key: key, value: value);
+  Future<bool> exist({required QueryReference query}) async {
+    var data = await getOneByField(query: query);
     return data != null;
   }
 
-  Future<Type?> getOne(
-      {required int documentId}) async {
+  Future<Type?> getOne({required int documentId}) async {
     return applyInstance(await dRefToMap(dRef(documentId: documentId)));
   }
 
@@ -82,27 +76,10 @@ abstract class FirebaseStoreUtilInterface<Type extends WithDocId> {
   Future<List> queryToList(query);
 
   Future<List<Type>> getList({
-    String? key,
-    String? value,
-    bool onlyMyData = false,
+    required QueryReference query,
     bool useSort = true,
     bool descending = false,
   }) async {
-    if ((key != null && value == null) || (key == null && value != null)) {
-      LogUtil.error("getList 둘 중에 1개가 비어 있습니다.");
-      return [];
-    }
-
-    dynamic query = cRef();
-    if (key != null && value != null) {
-      query = query.where(key, isEqualTo: value);
-    }
-
-    if (onlyMyData) {
-      // LogUtil.debug("AuthUtil().email : ${AuthUtil().email}");
-      query = query.where("email", isEqualTo: AuthUtil().email??"");
-    }
-
     return getListFromDocs(
       await queryToList(query),
       useSort: useSort,

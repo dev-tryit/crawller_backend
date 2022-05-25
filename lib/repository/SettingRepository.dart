@@ -57,10 +57,9 @@ class SettingRepository {
     return await _.saveByDocumentId(instance: setting);
   }
   Future<bool> existDocumentId({required String documentId}) async {
+
     return await _.exist(
-      key: "documentId",
-      value: documentId,
-    );
+        query: _.cRef().where("documentId", isEqualTo: documentId));
   }
 
   Future<void> delete({required int documentId}) async {
@@ -71,7 +70,7 @@ class SettingRepository {
     return await _.getOne(documentId: documentId);
   }
 
-  Future<List<Setting>> getList() async {
-    return await _.getList(onlyMyData: true);
+  Future<List<Setting>> getList(String email) async {
+    return await _.getList(query: _.cRef().where("email", isEqualTo: email));
   }
 }

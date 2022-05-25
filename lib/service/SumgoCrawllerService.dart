@@ -24,26 +24,33 @@ class SumgoCrawllerService {
         this.delay = const Duration(milliseconds: 100),
         this.timeout = Duration(seconds: 20);
 
-  Future<shelf.Response> route(String endPoint, Map<String, String> queryParameters) async {
+  Future<shelf.Response> route(
+      String endPoint, Map<String, String> queryParameters) async {
     if (endPoint == "crawll") {
-      return await crawll(queryParameters["settingDocumentId"]);
+      return await crawll(queryParameters["settingDocumentId"],
+          queryParameters["firebaseAuthEmail"]);
     } else {
       return shelf.Response.forbidden('crawll fail');
     }
   }
 
-  Future<shelf.Response> crawll(String? settingDocumentIdStr) async {
-    if(settingDocumentIdStr == null) {
+  Future<shelf.Response> crawll(
+      String? settingDocumentIdStr, String? firebaseAuthEmail) async {
+    if (settingDocumentIdStr == null) {
       return shelf.Response.forbidden('settingDocumentIdStr is null');
+    }
+    if (firebaseAuthEmail == null) {
+      return shelf.Response.forbidden('firebaseAuthEmail is null');
     }
 
     int? settingDocumentId = int.tryParse(settingDocumentIdStr);
-    if(settingDocumentId == null) {
+    if (settingDocumentId == null) {
       return shelf.Response.forbidden('settingDocumentId is null');
     }
 
     Map<String, String> evnVars = Platform.environment;
-    AuthUtil().loginWithEmail(evnVars["firebaseEmail"]!, evnVars["firebasePassword"]!);
+    AuthUtil().loginWithEmail(
+        evnVars["firebaseEmail"]!, evnVars["firebasePassword"]!);
 
     Setting? setting =
         await SettingRepository().getOne(documentId: settingDocumentId);
@@ -58,7 +65,7 @@ class SumgoCrawllerService {
 
     await _login(setting.sumgoId ?? "", setting.sumgoPw ?? "");
 
-    await _deleteAndSendRequests();
+    await _deleteAndSendRequests(firebaseAuthEmail);
 
     await p.stopBrowser();
 
@@ -111,7 +118,7 @@ class SumgoCrawllerService {
         "document.querySelector('.btn.btn-primary.btn-block').click();");
   }
 
-  Future<void> _deleteAndSendRequests() async {
+  Future<void> _deleteAndSendRequests(String firebaseAuthEmail) async {
     LogUtil.info("_deleteAndSendRequests 시작");
 
     Future<bool> refreshAndExitIfShould() async {
@@ -156,17 +163,18 @@ class SumgoCrawllerService {
         message,
         () async => await _sendRequests(tag, message),
         () async => await _deleteRequest(tag, message),
+        firebaseAuthEmail,
       );
     }
 
-    Future<void> saveFirestore(Map<String, int> keywordMap) async {
+    Future<void> saveFirestore(
+        Map<String, int> keywordMap, String firebaseAuthEmail) async {
       for (var entry in keywordMap.entries) {
         String eachWord = entry.key;
         int count = entry.value;
 
-        //TODO: repository..... 추가해야함.
-        KeywordItem? keywordItem =
-            await KeywordItemRepository().getKeywordItem(keyword: eachWord);
+        KeywordItem? keywordItem = await KeywordItemRepository()
+            .getKeywordItem(email: firebaseAuthEmail, keyword: eachWord);
         if (keywordItem == null) {
           await KeywordItemRepository().add(
             keywordItem: KeywordItem(
@@ -184,21 +192,24 @@ class SumgoCrawllerService {
       }
     }
 
-    await saveFirestore(keywordMap);
+    await saveFirestore(keywordMap, firebaseAuthEmail);
   }
 
   Future<void> decideMethod(String message, Future<void> Function() send,
-      Future<void> Function() delete) async {
+      Future<void> Function() delete, String firebaseAuthEmail) async {
     final List<String> listToIncludeAlways = (await RemovalConditionRepository()
-            .getListByType(type: RemovalType.best.value))
+            .getListByType(
+                email: firebaseAuthEmail, type: RemovalType.best.value))
         .map((e) => e.content ?? "")
         .toList();
     final List<String> listToInclude = (await RemovalConditionRepository()
-            .getListByType(type: RemovalType.include.value))
+            .getListByType(
+                email: firebaseAuthEmail, type: RemovalType.include.value))
         .map((e) => e.content ?? "")
         .toList();
     final List<String> listToExclude = (await RemovalConditionRepository()
-            .getListByType(type: RemovalType.exclude.value))
+            .getListByType(
+                email: firebaseAuthEmail, type: RemovalType.exclude.value))
         .map((e) => e.content ?? "")
         .toList();
 

@@ -65,45 +65,51 @@ class RemovalConditionRepository {
 
   Future<bool> existDocumentId({required String documentId}) async {
     return await _.exist(
-      key: "documentId",
-      value: documentId,
-    );
+        query: _.cRef().where("documentId", isEqualTo: documentId));
   }
 
   Future<void> delete({required int documentId}) async {
     await _.deleteOne(documentId: documentId);
   }
 
-  Future<RemovalCondition?> getOneByTitle({required String title}) async {
+  Future<RemovalCondition?> getOneByTitle(
+      {required String email, required String title}) async {
     return await _.getOneByField(
-      key: "title",
-      value: title,
-      onlyMyData: true,
-    );
+        query: _
+            .cRef()
+            .where("email", isEqualTo: email)
+            .where("title", isEqualTo: title));
   }
 
-  Future<List<RemovalCondition>> getList() async {
-    return await _.getList(onlyMyData: true);
+  Future<List<RemovalCondition>> getList(String email) async {
+    return await _.getList(query: _.cRef().where("email", isEqualTo: email));
   }
 
-  Future<List<RemovalCondition>> getListByType({required String type}) async {
-    return await _.getList(key: "type", value: type, onlyMyData: true);
+  Future<List<RemovalCondition>> getListByType(
+      {required String email, required String type}) async {
+    return await _.getList(
+        query: _
+            .cRef()
+            .where("email", isEqualTo: email)
+            .where("type", isEqualTo: type));
   }
 }
 
 class RemovalType {
   static RemovalType get best => const RemovalType.internal("최우선키워드", "best");
+
   static RemovalType get include => const RemovalType.internal("포함", "include");
+
   static RemovalType get exclude => const RemovalType.internal("제외", "exclude");
+
   static List<RemovalType> get values => [
-    RemovalType.include,
-    RemovalType.exclude,
-    RemovalType.best,
-  ];
+        RemovalType.include,
+        RemovalType.exclude,
+        RemovalType.best,
+      ];
 
   final String display;
   final String value;
 
   const RemovalType.internal(this.display, this.value);
 }
-
