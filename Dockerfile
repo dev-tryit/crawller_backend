@@ -14,6 +14,9 @@ RUN apt-get update \
       --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 RUN dart /app/bin/download_chromium.dart
+RUN ls -al /app
+RUN ls -al /app/bin
+RUN ls -al /app/lib
 
 # Copy app source code and AOT compile it.
 COPY . .
