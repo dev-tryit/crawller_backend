@@ -45,7 +45,7 @@ class SumgoCrawllerService {
       return;
     }
 
-    AuthUtil().loginWithEmail(localData["email"], localData["password"]);
+    AuthUtil().loginWithEmail(localData["email"]!, localData["password"]!);
 
     Setting? setting =
         await SettingRepository().getOne(documentId: settingDocumentId);
