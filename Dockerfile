@@ -13,13 +13,14 @@ RUN apt-get update \
     && apt-get install -y unzip google-chrome-stable fonts-ipafont-gothic fonts-wqy-zenhei fonts-thai-tlwg fonts-kacst fonts-freefont-ttf libxss1 \
       --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
-RUN dart /app/bin/download_chromium.dart
-RUN ls -al /app
-RUN ls -al /app/bin
-RUN ls -al /app/lib
 
 # Copy app source code and AOT compile it.
 COPY . .
+
+RUN dart /bin/download_chromium.dart
+RUN ls -al /app
+RUN ls -al /app/bin
+RUN ls -al /app/lib
 
 # Ensure packages are still up-to-date if anything has changed
 RUN dart pub get --offline
