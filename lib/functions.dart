@@ -39,11 +39,7 @@ Router app = Router()
     ;
 
 @CloudFunction()
-Future<Response> function(Request request) async {
-  await AuthUtil().init();
-
-  return await app.call(request);
-}
+Future<Response> function(Request request) async =>await app.call(request);
 
 // Overriding the default 'function' also works, but you will need
 // to ensure to set the FUNCTION_TARGET environment variable for the

@@ -49,7 +49,8 @@ class SumgoCrawllerService {
     }
 
     Map<String, String> evnVars = Platform.environment;
-    AuthUtil().loginWithEmail(
+    await AuthUtil().init();
+    await AuthUtil().loginWithEmail(
         evnVars["firebaseEmail"]!, evnVars["firebasePassword"]!);
 
     Setting? setting =
