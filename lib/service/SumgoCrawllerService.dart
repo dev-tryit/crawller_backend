@@ -26,23 +26,20 @@ class SumgoCrawllerService {
 
   Future<shelf.Response> route(String endPoint, Map<String, String> queryParameters) async {
     if (endPoint == "crawll") {
-      await start(queryParameters["settingDocumentId"]);
-      return shelf.Response.ok('crawll success');
+      return await crawll(queryParameters["settingDocumentId"]);
     } else {
       return shelf.Response.forbidden('crawll fail');
     }
   }
 
-  Future<void> start(String? settingDocumentIdStr) async {
+  Future<shelf.Response> crawll(String? settingDocumentIdStr) async {
     if(settingDocumentIdStr == null) {
-      LogUtil.warn("settingDocumentIdStr is null");
-      return;
+      return shelf.Response.forbidden('settingDocumentIdStr is null');
     }
 
     int? settingDocumentId = int.tryParse(settingDocumentIdStr);
     if(settingDocumentId == null) {
-      LogUtil.warn("settingDocumentId is null");
-      return;
+      return shelf.Response.forbidden('settingDocumentId is null');
     }
 
     AuthUtil().loginWithEmail(localData["email"]!, localData["password"]!);
@@ -50,8 +47,7 @@ class SumgoCrawllerService {
     Setting? setting =
         await SettingRepository().getOne(documentId: settingDocumentId);
     if (setting == null) {
-      LogUtil.warn("setting이 없습니다.");
-      return;
+      return shelf.Response.forbidden('setting이 없습니다.');
     }
 
     await p.startBrowser(
@@ -64,6 +60,8 @@ class SumgoCrawllerService {
     await _deleteAndSendRequests();
 
     await p.stopBrowser();
+
+    return shelf.Response.ok('crawll 끝');
   }
 
   Future<void> _login(String? id, String? pw) async {
