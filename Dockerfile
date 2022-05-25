@@ -17,7 +17,7 @@ RUN apt-get update \
 # Copy app source code and AOT compile it.
 COPY . .
 
-RUN dart /bin/download_chromium.dart
+RUN dart bin/download_chromium.dart
 RUN ls -al /app
 RUN ls -al /app/bin
 RUN ls -al /app/lib
