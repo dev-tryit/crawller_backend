@@ -39,7 +39,7 @@ class SumgoCrawllerService {
       String? settingDocumentIdStr, String? firebaseAuthEmail) async {
     await HiveUtil.init();
     await AuthUtil().init();
-    
+
     if (settingDocumentIdStr == null) {
       return shelf.Response.forbidden('settingDocumentIdStr is null');
     }
