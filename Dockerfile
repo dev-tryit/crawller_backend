@@ -10,7 +10,7 @@ COPY . .
 
 # Ensure packages are still up-to-date if anything has changed
 RUN dart pub get --offline
-RUN dart bin/download_chromium.dart
+RUN dart /app/bin/download_chromium.dart
 RUN dart pub run build_runner build --delete-conflicting-outputs
 RUN dart compile exe bin/server.dart -o bin/server
 
