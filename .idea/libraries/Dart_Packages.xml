@@ -306,7 +306,7 @@
         <entry key="petitparser">
           <value>
             <list>
-              <option value="$PROJECT_DIR$/../../../../env/flutter/.pub-cache/hosted/pub.dartlang.org/petitparser-5.0.0/lib" />
+              <option value="$PROJECT_DIR$/../../../../env/flutter/.pub-cache/hosted/pub.dartlang.org/petitparser-4.4.0/lib" />
             </list>
           </value>
         </entry>
@@ -566,7 +566,7 @@
       <root url="file://$PROJECT_DIR$/../../../../env/flutter/.pub-cache/hosted/pub.dartlang.org/node_preamble-2.0.1/lib" />
       <root url="file://$PROJECT_DIR$/../../../../env/flutter/.pub-cache/hosted/pub.dartlang.org/package_config-2.0.2/lib" />
       <root url="file://$PROJECT_DIR$/../../../../env/flutter/.pub-cache/hosted/pub.dartlang.org/path-1.8.2/lib" />
-      <root url="file://$PROJECT_DIR$/../../../../env/flutter/.pub-cache/hosted/pub.dartlang.org/petitparser-5.0.0/lib" />
+      <root url="file://$PROJECT_DIR$/../../../../env/flutter/.pub-cache/hosted/pub.dartlang.org/petitparser-4.4.0/lib" />
       <root url="file://$PROJECT_DIR$/../../../../env/flutter/.pub-cache/hosted/pub.dartlang.org/pool-1.5.0/lib" />
       <root url="file://$PROJECT_DIR$/../../../../env/flutter/.pub-cache/hosted/pub.dartlang.org/pub_semver-2.1.1/lib" />
       <root url="file://$PROJECT_DIR$/../../../../env/flutter/.pub-cache/hosted/pub.dartlang.org/pubspec_parse-1.2.0/lib" />
